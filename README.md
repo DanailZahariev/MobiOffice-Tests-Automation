@@ -58,6 +58,13 @@ MobiOfficeAutomation/
 
 ## ✅ Prerequisites
 
+### 📱 Application Setup
+
+**Crucial Step:** The automation framework does **not** install the application automatically.
+
+* Ensure the **MobiOffice** application is installed on your **Android Emulator** or **Real Device** before running the tests.
+* You can install it via Google Play Store or by manually installing the APK.
+
 Before running the tests, ensure you have the following installed:
 
 ### Required Software
