@@ -2,7 +2,7 @@ package com.mobioffice.utils.enums;
 
 public enum TestUser {
 
-    STANDARD_USER("testuser1@gmail.com", "1234test", "Test User");
+    STANDARD_USER("YOUR NAME", "PASSWORD", "Test User");
 
     private final String email;
     private final String password;
