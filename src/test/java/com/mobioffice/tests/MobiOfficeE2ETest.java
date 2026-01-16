@@ -31,11 +31,12 @@ public class MobiOfficeE2ETest extends BaseTest {
                 .clickSignIn()
                 .loginWithEmail(user.getEmail(), user.getPassword());
 
-        String username = accountScreen.getUsername();
+        String actualName = accountScreen.getUsername();
+        String expectedName = user.getExpectedName();;
 
-        Assert.assertEquals(username, user.getExpectedName(),
-                "Login failed or username mismatch!");
-        LOGGER.info("Successfully logged in as user: {}", username);
+        Assert.assertEquals(actualName, expectedName,
+                "Expected username " + expectedName + " but got " + actualName + " instead!");
+        LOGGER.info("Successfully logged in as user: {}", actualName);
 
         homeScreen.clickHome();
         homeScreen.clickShowMoreOrLess();
