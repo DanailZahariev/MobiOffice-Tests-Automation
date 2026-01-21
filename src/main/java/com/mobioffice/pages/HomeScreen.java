@@ -5,15 +5,12 @@ import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
 
 import java.util.List;
 
 public class HomeScreen extends BaseScreen {
 
-
-    private final By accountTab = AppiumBy.accessibilityId("Account");
-    private final By homeTab = AppiumBy.accessibilityId("Home");
-    private final By welcomeMessage = AppiumBy.xpath("//*[contains(@text, 'Welcome, Test User')]");
     private final By showMoreHeader = AppiumBy.id("com.mobisystems.office:id/header_button");
     private final By fileNames = AppiumBy.xpath("//android.widget.TextView[@content-desc=\"File name\"]");
     private final By cloudIcon = AppiumBy.xpath("(//android.widget.ImageView[@resource-id=\"com.mobisystems.office:id/file_location_imageview\"])");
@@ -29,9 +26,10 @@ public class HomeScreen extends BaseScreen {
     }
 
 
-    public void clickShowMoreOrLess() {
+    public HomeScreen clickShowMoreOrLess() {
         waitForVisibility(showMoreHeader);
         click(showMoreHeader);
+        return this;
     }
 
     public boolean isCloudIconDisplayed() {
@@ -39,20 +37,42 @@ public class HomeScreen extends BaseScreen {
         return !icons.isEmpty();
     }
 
+    public HomeScreen verifyCloudIconVisible(boolean shouldBeVisible) {
+        if (shouldBeVisible) {
+            Assert.assertTrue(isCloudIconDisplayed(), "Cloud icons should be visible!");
+        } else {
+            Assert.assertFalse(isCloudIconDisplayed(), "Cloud icons should NOT be visible!");
+        }
+        return this;
+    }
+
+    public HomeScreen verifyFileDoesNotExists(String fileName) {
+        List<String> allFiles = getAllFiles();
+        if (allFiles != null) {
+            Assert.assertFalse(allFiles.contains(fileName), "File should NOT be visible: " + fileName);
+        }
+        return this;
+    }
+
+    public HomeScreen verifyFileExists(String fileName) {
+        List<String> allFiles = getAllFiles();
+        Assert.assertTrue(allFiles.contains(fileName), "File missing: " + fileName);
+        return this;
+    }
+
     public List<String> getAllFiles() {
         return fluentWaitUntilVisible(fileNames);
     }
 
-    public void clickHome() {
+    public HomeScreen clickHome() {
         click(homeTab);
+        return this;
     }
 
     public void handleWelcomePopUp() {
-        try {
-            if (isElementDisplayed(welcomeMessage)) {
-                wait.until(ExpectedConditions.invisibilityOfElementLocated(welcomeMessage));
-            }
-        } catch (Exception e) {
+        if (isElementDisplayed(welcomeMessage)) {
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(welcomeMessage));
+        } else {
             LOGGER.info("Welcome message is not displayed");
         }
     }

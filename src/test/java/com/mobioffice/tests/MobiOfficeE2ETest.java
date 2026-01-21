@@ -1,15 +1,11 @@
 package com.mobioffice.tests;
 
-import com.mobioffice.pages.AccountScreen;
 import com.mobioffice.pages.HomeScreen;
 import com.mobioffice.utils.enums.TestFiles;
 import com.mobioffice.utils.enums.TestUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.List;
 
 public class MobiOfficeE2ETest extends BaseTest {
 
@@ -17,60 +13,26 @@ public class MobiOfficeE2ETest extends BaseTest {
 
     @Test(description = "E2E Scenario: Login -> Verify Cloud/Local Files -> Logout -> Verify Cloud Files Not Visible")
     public void testFullUserFlow() {
-        HomeScreen homeScreen = new HomeScreen(driver);
-        AccountScreen accountScreen = homeScreen.goToAccountSection();
-
-        accountScreen.logOutIfLoggedIn();
-
-        LOGGER.info("Starting clean up: Logging out if needed...");
-
         TestUser user = TestUser.STANDARD_USER;
-        LOGGER.info("Attempting login with user: {}", user.getEmail());
 
-        accountScreen
+        new HomeScreen(driver)
+                .goToAccountSection()
+                .logOutIfLoggedIn()
                 .clickSignIn()
-                .loginWithEmail(user.getEmail(), user.getPassword());
-
-        String actualName = accountScreen.getUsername();
-        String expectedName = user.getExpectedName();;
-
-        Assert.assertEquals(actualName, expectedName,
-                "Expected username " + expectedName + " but got " + actualName + " instead!");
-        LOGGER.info("Successfully logged in as user: {}", actualName);
-
-        homeScreen.clickHome();
-        homeScreen.clickShowMoreOrLess();
-
-        List<String> allFiles = homeScreen.getAllFiles();
-
-        LOGGER.info("Verifying cloud files: {}", allFiles);
-
-        Assert.assertTrue(homeScreen.isCloudIconDisplayed(),
-                "Cloud icons should be visible when logged in!");
-        Assert.assertTrue(allFiles.contains(TestFiles.XLS.getFileName()),
-                "Recent file is missing!");
-        Assert.assertTrue(allFiles.contains(TestFiles.PDF.getFileName()),
-                "Recent file is missing!");
-        Assert.assertTrue(allFiles.contains(TestFiles.SLIDESHOW.getFileName()),
-                "Recent file is missing!");
-        Assert.assertTrue(allFiles.contains(TestFiles.DOCUMENT.getFileName()),
-                "Recent file is missing!");
-
-        LOGGER.info("Logging out...");
-
-        homeScreen.goToAccountSection().signOut();
-
-        Assert.assertFalse(accountScreen.isUserLoggedIn(), "User is still logged in!");
-
-        homeScreen.clickHome();
-
-        Assert.assertFalse(homeScreen.isCloudIconDisplayed(),
-                "Cloud icons are still visible after logout!");
-
-        List<String> filesAfterLogout = homeScreen.getAllFiles();
-        Assert.assertTrue(filesAfterLogout.contains(TestFiles.LOCAL_DOC.getFileName()),
-                "Cloud file should not be visible after logout!");
-
-        LOGGER.info("E2E Test finished successfully.");
+                .loginWithEmail(user.getEmail(), user.getPassword())
+                .verifyUsername(user.getExpectedName())
+                .goToHome()
+                .clickShowMoreOrLess()
+                .verifyCloudIconVisible(true)
+                .verifyFileExists(TestFiles.XLS.getFileName())
+                .verifyFileExists(TestFiles.PDF.getFileName())
+                .verifyFileExists(TestFiles.SLIDESHOW.getFileName())
+                .verifyFileExists(TestFiles.DOCUMENT.getFileName())
+                .goToAccountSection()
+                .signOut()
+                .verifyUserLoggedOut()
+                .goToHome()
+                .verifyCloudIconVisible(false)
+                .verifyFileExists(TestFiles.LOCAL_DOC.getFileName());
     }
 }

@@ -18,9 +18,7 @@ public class LoginScreen extends BaseScreen {
 
     public AccountScreen loginWithEmail(String email, String password) {
         click(emailOrPhoneBtn);
-        click(emailField);
         fillInput(emailField, email);
-        click(passwordField);
         fillInput(passwordField, password);
         click(signInBtn);
         handleGoogleSmartLock();
@@ -29,12 +27,9 @@ public class LoginScreen extends BaseScreen {
     }
 
     private void handleGoogleSmartLock() {
-        try {
-
-            if (isElementDisplayed(googleSavePassNo)) {
-                click(googleSavePassNo);
-            }
-        } catch (Exception e) {
+        if (isElementDisplayed(googleSavePassNo)) {
+            click(googleSavePassNo);
+        } else {
             LOGGER.info("Google Smart Lock is not displayed");
         }
     }

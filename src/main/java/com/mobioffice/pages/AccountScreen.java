@@ -3,6 +3,7 @@ package com.mobioffice.pages;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 
 public class AccountScreen extends BaseScreen {
 
@@ -20,19 +21,36 @@ public class AccountScreen extends BaseScreen {
         return new LoginScreen(driver);
     }
 
-    public void signOut() {
-        click(signOutBtn);
-        click(signOutOkBtn);
+    public HomeScreen goToHome() {
+        click(homeTab);
+        return new HomeScreen(driver);
     }
 
-    public void logOutIfLoggedIn() {
-        try {
-            if (isElementDisplayed(signOutBtn)) {
-                signOut();
-            }
-        } catch (Exception e) {
-            LOGGER.info("User is not logged in");
+    public AccountScreen signOut() {
+        click(signOutBtn);
+        click(signOutOkBtn);
+        return this;
+    }
+
+    public AccountScreen logOutIfLoggedIn() {
+        if (isElementDisplayed(signOutBtn)) {
+            signOut();
+        } else {
+            LOGGER.info("Sign out button is not displayed");
         }
+        return this;
+    }
+
+    public AccountScreen verifyUsername(String expectedName) {
+        String actualName = getUsername();
+        Assert.assertEquals(actualName, expectedName,
+                "Expected username " + expectedName + " but got " + actualName + " instead!");
+        return this;
+    }
+
+    public AccountScreen verifyUserLoggedOut() {
+        Assert.assertFalse(isUserLoggedIn(), "User is still logged in!");
+        return this;
     }
 
     public String getUsername() {
@@ -40,10 +58,6 @@ public class AccountScreen extends BaseScreen {
     }
 
     public boolean isUserLoggedIn() {
-        try {
-            return isElementDisplayed(userUsername);
-        } catch (Exception e) {
-            return false;
-        }
+        return isElementDisplayed(userUsername);
     }
 }

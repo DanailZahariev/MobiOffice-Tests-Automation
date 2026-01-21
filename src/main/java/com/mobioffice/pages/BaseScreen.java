@@ -1,5 +1,6 @@
 package com.mobioffice.pages;
 
+import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,7 +10,6 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BaseScreen {
@@ -17,6 +17,10 @@ public class BaseScreen {
     protected AndroidDriver driver;
     protected WebDriverWait wait;
     protected final Logger LOGGER = LogManager.getLogger(this.getClass());
+
+    protected final By accountTab = AppiumBy.accessibilityId("Account");
+    protected final By homeTab = AppiumBy.accessibilityId("Home");
+    protected final By welcomeMessage = AppiumBy.xpath("//*[contains(@text, 'Welcome, ')]");
 
     public BaseScreen(AndroidDriver driver) {
         this.driver = driver;
@@ -61,15 +65,12 @@ public class BaseScreen {
                 .pollingEvery(Duration.ofMillis(500))
                 .ignoring(StaleElementReferenceException.class);
 
-        return fluentWait.until(d -> {
-            List<String> resultList = new ArrayList<>();
-            List<WebElement> elements = d.findElements(locator);
-            for (WebElement element : elements) {
-                if (element.isDisplayed()) {
-                    resultList.add(element.getText());
-                }
+        return fluentWait.until(driver -> {
+            List<WebElement> elements = driver.findElements(locator);
+            if (elements.isEmpty()) {
+                return null;
             }
-            return resultList;
+            return elements.stream().map(WebElement::getText).toList();
         });
     }
 }
