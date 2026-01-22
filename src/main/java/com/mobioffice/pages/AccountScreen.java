@@ -3,7 +3,6 @@ package com.mobioffice.pages;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
-import org.testng.Assert;
 
 public class AccountScreen extends BaseScreen {
 
@@ -21,11 +20,6 @@ public class AccountScreen extends BaseScreen {
         return new LoginScreen(driver);
     }
 
-    public HomeScreen goToHome() {
-        click(homeTab);
-        return new HomeScreen(driver);
-    }
-
     public AccountScreen signOut() {
         click(signOutBtn);
         click(signOutOkBtn);
@@ -41,17 +35,6 @@ public class AccountScreen extends BaseScreen {
         return this;
     }
 
-    public AccountScreen verifyUsername(String expectedName) {
-        String actualName = getUsername();
-        Assert.assertEquals(actualName, expectedName,
-                "Expected username " + expectedName + " but got " + actualName + " instead!");
-        return this;
-    }
-
-    public AccountScreen verifyUserLoggedOut() {
-        Assert.assertFalse(isUserLoggedIn(), "User is still logged in!");
-        return this;
-    }
 
     public String getUsername() {
         return getText(userUsername);

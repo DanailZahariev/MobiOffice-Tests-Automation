@@ -37,36 +37,8 @@ public class HomeScreen extends BaseScreen {
         return !icons.isEmpty();
     }
 
-    public HomeScreen verifyCloudIconVisible(boolean shouldBeVisible) {
-        if (shouldBeVisible) {
-            Assert.assertTrue(isCloudIconDisplayed(), "Cloud icons should be visible!");
-        } else {
-            Assert.assertFalse(isCloudIconDisplayed(), "Cloud icons should NOT be visible!");
-        }
-        return this;
-    }
-
-    public HomeScreen verifyFileDoesNotExists(String fileName) {
-        List<String> allFiles = getAllFiles();
-        if (allFiles != null) {
-            Assert.assertFalse(allFiles.contains(fileName), "File should NOT be visible: " + fileName);
-        }
-        return this;
-    }
-
-    public HomeScreen verifyFileExists(String fileName) {
-        List<String> allFiles = getAllFiles();
-        Assert.assertTrue(allFiles.contains(fileName), "File missing: " + fileName);
-        return this;
-    }
-
     public List<String> getAllFiles() {
         return fluentWaitUntilVisible(fileNames);
-    }
-
-    public HomeScreen clickHome() {
-        click(homeTab);
-        return this;
     }
 
     public void handleWelcomePopUp() {

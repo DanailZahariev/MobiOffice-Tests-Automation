@@ -12,7 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-public class BaseScreen {
+public abstract class BaseScreen {
 
     protected AndroidDriver driver;
     protected WebDriverWait wait;
@@ -57,6 +57,11 @@ public class BaseScreen {
 
     private void waitToBeClickable(By locator) {
         wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    }
+
+    public HomeScreen goToHome() {
+        click(homeTab);
+        return new HomeScreen(driver);
     }
 
     protected List<String> fluentWaitUntilVisible(By locator) {
